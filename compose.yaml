@@ -1,9 +1,7 @@
-version: '3.9'
-
 services:
   mariadb:
     image: mariadb:11.5
-    container_name: mariadb-symfony
+    container_name: mariadb-symfony-annuaire
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}   # Root password
@@ -19,7 +17,7 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: nginx-symfony
+    container_name: nginx-symfony-annuaire
     restart: always
     ports:
       - "80:80"
@@ -34,15 +32,21 @@ services:
 
   php:
     build: ./php
-    container_name: php-symfony
+    container_name: php-symfony-annuaire
     volumes:
       - ./public:/var/www/html
+    environment:
+      - APP_SECRET=${APP_SECRET}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
     networks:
       - app_network
 
   phpmyadmin:
     image: phpmyadmin:latest
-    container_name: phpmyadmin_symfony
+    container_name: phpmyadmin_symfony-annuaire
     restart: always
     environment:
       PMA_HOST: mariadb
